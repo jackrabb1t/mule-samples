@@ -1,12 +1,77 @@
-*.class
+*/lib/
+*/.classpath
+*/.project
+*/.studio/
+*/files/
+*/target/
+oldpoc/
+wfm-ingester/
+*/bin/
+*/.externalToolBuilders/
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# -------------------------------- #
+# THIS PROJECT SPECIFIC EXCLUSIONS #
+# -------------------------------- #
+*/files/
+*/lib/
+*/*.log
+
+
+# ------------------------------------ GLOBAL ---------------------------------- #
+# Java defaults (https://github.com/github/gitignore/blob/master/Java.gitignore) #
+# ------------------------------------------------------------------------------ #
+*.class
 
 # Package Files #
 *.jar
 *.war
 *.ear
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# ------------------------------------------------------------------------------------------- #
+# Eclipse-specific (https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore) #
+# ------------------------------------------------------------------------------------------- #
+*.pydevproject
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+maven-eclipse.xml
+# You may want to remove the sharp symbols here if you are using Maven 
+.project
+.classpath
+
+# External tool builders
+*/.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+# --------------- #
+# Mule Studio-specific #
+# --------------- #
+.studio/
+flows/
+target/
+**/*.mflow
+/src/main/resources/*.jks
+
+# ---------------- #
+# Mac OSX-specific #
+# ---------------- #
+.DS_Store
+
+*badcode
+

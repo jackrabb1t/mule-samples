@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.1"
+	xmlns:mulerequester="http://www.mulesoft.org/schema/mule/mulerequester"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/current/mule-mulerequester.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+
+<!--    <batch:job name="example-selectFromTableBatch"> -->
+<!--         <batch:input> -->
+<!--             <mulerequester:request config-ref="requester1" resource="file:///C:/tmp/test/sample-person-input.csv"  -->
+<!--             		timeout="10000" doc:name="Read Input File"/> -->
+<!--             <byte-array-to-object-transformer doc:name="Byte Array to Object"/> -->
+<!--             <data-mapper:transform doc:name="SampleDataMapper" stream="true" config-ref="SampleDataMapper"/> -->
+<!--          </batch:input> -->
+<!--         <batch:process-records> -->
+<!--             <batch:step name="Batch_Step_1"> -->
+<!--                 <logger message="in B.S.1 #[payload]" level="INFO" doc:name="Print payload"/> -->
+<!--                  <db:insert config-ref="MySQL_Configuration" target="#[flowVars['updateCount']]" doc:name="Database"> -->
+<!--                     <db:parameterized-query><![CDATA[ -->
+<!--                     	insert into person(id, name) values (#[payload.get('Id')],#[payload.get('Name')]) on duplicate key update id= #[payload.get('Id')], name=#[payload.get('Name')]; -->
+<!--                     	]]></db:parameterized-query> -->
+<!-- 				</db:insert>  -->
+<!-- 				<logger message="Affected-Rows / UpdatedCount : #[flowVars['updateCount']]" level="INFO" doc:name="Print payload"/> -->
+<!--             </batch:step> -->
+<!--         </batch:process-records> -->
+<!--         <batch:on-complete> -->
+<!--             <logger message="Completed" level="INFO" doc:name="Logger"/> -->
+<!--         </batch:on-complete> -->
+<!--     </batch:job> -->
+	
+<!-- 	   <batch:job name="example-upsertWithTableBatch"> -->
+<!--         <batch:input> -->
+<!--             <mulerequester:request config-ref="requester1" resource="file:///C:/tmp/test/sample-person-input.csv"  -->
+<!--             		timeout="10000" doc:name="Read Input File"/> -->
+<!--             <byte-array-to-object-transformer doc:name="Byte Array to Object"/> -->
+<!--             <data-mapper:transform doc:name="SampleDataMapper" stream="true" config-ref="SampleDataMapper"/> -->
+<!--          </batch:input> -->
+<!--         <batch:process-records> -->
+<!--             <batch:step name="Batch_Step_1"> -->
+<!--                 <logger message="in B.S.1 #[payload]" level="INFO" doc:name="Print payload"/> -->
+<!--                  <db:insert config-ref="MySQL_Configuration" target="#[flowVars['updateCount']]" doc:name="Database"> -->
+<!--                     <db:parameterized-query><![CDATA[ -->
+<!--                     	insert into person(id, name) values (#[payload.get('Id')],#[payload.get('Name')]) on duplicate key update id= #[payload.get('Id')], name=#[payload.get('Name')]; -->
+<!--                     	]]></db:parameterized-query> -->
+<!-- 				</db:insert>  -->
+<!-- 				<logger message="Affected-Rows / UpdatedCount : #[flowVars['updateCount']]" level="INFO" doc:name="Print payload"/> -->
+<!--             </batch:step> -->
+<!--         </batch:process-records> -->
+<!--         <batch:on-complete> -->
+<!--             <logger message="Completed" level="INFO" doc:name="Logger"/> -->
+<!--         </batch:on-complete> -->
+<!--     </batch:job> -->
+<!--     <flow name="example-upsertFlowWithTable"> -->
+<!--         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="footable" doc:name="HTTP" connector-ref="SharedHttp"/> -->
+<!--         <logger message="test message" level="INFO" doc:name="Logger"/> -->
+<!--         <batch:execute name="example-upsertBatch" doc:name="example-upsertBatch"/> -->
+<!--         <http:response-builder status="202" contentType="application/json" doc:name="HTTP Response Builder"> -->
+<!--        	</http:response-builder> -->
+<!--     </flow> -->
+</mule>

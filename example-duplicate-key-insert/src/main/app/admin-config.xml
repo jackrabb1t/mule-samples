@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:ws="http://www.mulesoft.org/schema/mule/ws" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:ftp="http://www.mulesoft.org/schema/mule/ee/ftp" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper" xmlns:mulerequester="http://www.mulesoft.org/schema/mule/mulerequester" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:core="http://www.mulesoft.org/schema/mule/core"
+	xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:objectstore="http://www.mulesoft.org/schema/mule/objectstore"
+	version="EE-3.5.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/current/mule-mulerequester.xsd
+http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/ee/ftp/current/mule-ftp-ee.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/ws http://www.mulesoft.org/schema/mule/ws/current/mule-ws.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/objectstore http://www.mulesoft.org/schema/mule/objectstore/current/mule-objectstore.xsd">
+
+    <http:connector name="SharedHttp" cookieSpec="netscape" validateConnections="true" 
+    	sendBufferSize="0" receiveBufferSize="0" receiveBacklog="0" 
+    	clientSoTimeout="10000" serverSoTimeout="10000" socketSoLinger="0" doc:name="HTTP-HTTPS"/>
+    	
+	<mulerequester:config name="requester1" doc:name="Mule Requester"></mulerequester:config>
+	
+    <data-mapper:config name="SampleDataMapper" transformationGraphPath="sampledatamapper.grf" doc:name="SampleDataMapper"/>
+    
+<!--      <db:mysql-config name="MySQL_Configuration" host="localhost" port="3306"  -->
+<!--     	user="root" password="root" database="local1" doc:name="MySQL Local Configuration"/> -->
+    	<!-- 
+    	    <db:mysql-config name="MySQL_Configuration" dataSource-ref="jdbcDataSource" doc:name="MySQL Configuration"/>   
+    	
+    	 -->
+        <spring:beans>
+             <spring:bean id= "jdbcDataSource" class ="org.apache.commons.dbcp.BasicDataSource" name= "Bean">
+	            <spring:property name= "driverClassName" value ="com.mysql.jdbc.Driver" />           
+	            <spring:property name= "username" value = "root"/>
+	            <spring:property name= "password" value = "root"/>	
+            	<spring:property name="url" value="jdbc:mysql://localhost:3306/local1?useAffectedRows=true"/>
+                <!-- Following properties added for having auto reconnect  mechanism-->
+	            <spring:property name= "testOnBorrow" value = "true"/>
+	            <spring:property name= "validationQuery" value = "select 1"/>
+       			<!-- Following properties added for getting affected rows value -->
+<!--            		<spring:property name="useAffectedRows" value="true"/>  -->
+           
+             </spring:bean>
+        </spring:beans>
+
+ 	<db:mysql-config name="MySQL_Configuration" dataSource-ref="jdbcDataSource" doc:name="MySQL_Configuration"/>   
+</mule>

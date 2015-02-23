@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="PremKumar.Stephen" created="Thu Feb 19 12:50:01 EST 2015" description="SampleDataMapper" guiVersion="3.4.4.P" id="1424370254250" licenseCode="Unlicensed" licenseType="Unknown" modified="Thu Feb 19 12:50:01 EST 2015" modifiedBy="PremKumar.Stephen" name="SampleDataMapper" preview-file="C:/tmp/other/sample-person-input.csv" revision="1.0" showComponentDetails="false">
 <Global>
-<Metadata __referenceCounter="1" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _type="Input" id="ba7c80bd-f5e4-42fa-a22b-1da61d4a0eef">
-<Record fieldDelimiter="," name="sample_person_input" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
-<Field containerType="SINGLE" label="Id" name="Id" size="10" type="string"/>
-<Field containerType="SINGLE" eofAsDelimiter="true" label="Name" name="Name" size="10" type="string"/>
-<Field __artificialType="_id" auto_filling="global_row_count" name="__id" type="long"/>
-</Record>
-</Metadata>
-<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/sample_x005fperson_x005finput" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _type="Output" id="1c9aa896-d9fa-4b1a-b9f9-226557d82f99">
+<Metadata __index="0" __referenceCounter="0" __sourcePath="{}/sample_x005fperson_x005finput" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _type="Output" id="1c9aa896-d9fa-4b1a-b9f9-226557d82f99">
 <Record fieldDelimiter="," name="sample_person_input" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
 <Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
 <Field __index="0" __sourcePath="{}/sample_x005fperson_x005finput/Id" containerType="SINGLE" label="Id" name="Id" type="string"/>
 <Field __index="1" __sourcePath="{}/sample_x005fperson_x005finput/Name" containerType="SINGLE" label="Name" name="Name" type="string"/>
+</Record>
+</Metadata>
+<Metadata __referenceCounter="0" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _type="Input" id="ba7c80bd-f5e4-42fa-a22b-1da61d4a0eef">
+<Record fieldDelimiter="," name="sample_person_input" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field containerType="SINGLE" label="Id" name="Id" size="10" type="string"/>
+<Field containerType="SINGLE" eofAsDelimiter="true" label="Name" name="Name" size="10" type="string"/>
+<Field __artificialType="_id" auto_filling="global_row_count" name="__id" type="long"/>
 </Record>
 </Metadata>
 <Dictionary>
@@ -24,26 +24,8 @@
 <attr name="_data_format"><![CDATA[CSV]]></attr>
 <attr name="__dataSourceDefinition"><![CDATA[C:/tmp/other/sample-person-input.csv]]></attr>
 </Node>
-<Node enabled="enabled" guiName="Foreach 'sample_person_input' -&gt; 'sample_x005fperson_x005finput'" guiX="460" guiY="20" id="FOREACH_SAMPLE_PERSON_INPUT_SAMPLE_X005FPERSON_X005FINPUT" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
-<attr name="melScript"><![CDATA[//MEL
-//START -> DO NOT REMOVE
-output.__id = num2str(input.__id);
-//END -> DO NOT REMOVE
-output.Id = input.Id;
-output.Name = input.Name;
-]]></attr>
-</Node>
 <Node cacheInMemory="true" enabled="enabled" fileURL="dict:outputPayload" guiName="Map&lt;k,v&gt; WRITER" guiX="900" guiY="20" id="MAP_WRITER0" type="MAP_WRITER">
-<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<clover:collection clover:name="sample_person_input" xmlns:clover="http://www.cloveretl.com/ns/xmlmapping">
-  <item clover:inPort="0">
-    <Id>$0.Id</Id>
-    <Name>$0.Name</Name>
-  </item>
-</clover:collection>]]></attr>
 <attr name="_data_format"><![CDATA[MAP]]></attr>
 </Node>
-<Edge debugMode="true" fromNode="DATA_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="ba7c80bd-f5e4-42fa-a22b-1da61d4a0eef" outPort="Port 0 (output)" toNode="FOREACH_SAMPLE_PERSON_INPUT_SAMPLE_X005FPERSON_X005FINPUT:0"/>
-<Edge debugMode="true" fromNode="FOREACH_SAMPLE_PERSON_INPUT_SAMPLE_X005FPERSON_X005FINPUT:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="1c9aa896-d9fa-4b1a-b9f9-226557d82f99" outPort="Port 0 (out)" toNode="MAP_WRITER0:0"/>
 </Phase>
 </Graph>

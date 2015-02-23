@@ -17,25 +17,29 @@ http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schem
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <data-mapper:config name="PersonDataMapper" transformationGraphPath="persondatamapper.grf" doc:name="PersonDataMapper"/>
 
  
 	
 	   <batch:job name="example-upsertBatch">
-        <batch:input>
-            <mulerequester:request config-ref="requester1" resource="file:///C:/tmp/test/sample-person-input.csv" 
-            		timeout="10000" doc:name="Read Input File"/>
-            <byte-array-to-object-transformer doc:name="Byte Array to Object"/>
-            <data-mapper:transform doc:name="SampleDataMapper" stream="true" config-ref="SampleDataMapper"/>
-         </batch:input>
         <batch:process-records>
             <batch:step name="Batch_Step_1">
                 <logger message="in B.S.1 #[payload]" level="INFO" doc:name="Print payload"/>
                  <db:insert config-ref="MySQL_Configuration" target="#[flowVars['updateCount']]" doc:name="Database">
-                    <db:parameterized-query><![CDATA[
-                    	insert into person(id, name) values (#[payload.get('Id')],#[payload.get('Name')]) on duplicate key update id= #[payload.get('Id')], name=#[payload.get('Name')];
-                    	]]></db:parameterized-query>
+                    <db:parameterized-query><![CDATA[insert into person(id, name, val) 
+                    		values (#[payload.get('Id')],#[payload.get('Name')],#[payload.get('Val')]) 
+                    		on duplicate key 
+                    			update id= #[payload.get('Id')], name=#[payload.get('Name')], val=#[payload.get('Val')];]]></db:parameterized-query>
 				</db:insert> 
-				<logger message="Affected-Rows / UpdatedCount : #[flowVars['updateCount']]" level="INFO" doc:name="Print payload"/>
+<!-- 				<logger message="Affected-Rows / UpdatedCount : #[flowVars['updateCount']]" level="INFO" doc:name="Print payload"/> -->
+                <choice doc:name="Choice">
+                	<when expression="#[flowVars['updateCount']>0]">
+                		<logger message="WHEN Affected-Rows / UpdatedCount : #[flowVars['updateCount']]" level="INFO" doc:name="Print payload"/>
+            		</when>
+	                <otherwise>
+                		<logger message="DEFAULT Affected-Rows / UpdatedCount : #[flowVars['updateCount']]" level="INFO" doc:name="Print payload"/>
+	            	</otherwise>
+        		</choice>
             </batch:step>
         </batch:process-records>
         <batch:on-complete>
@@ -44,7 +48,9 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
     </batch:job>
     <flow name="example-upsertFlow1">
         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="foo" doc:name="HTTP" connector-ref="SharedHttp"/>
-        <logger message="test message" level="INFO" doc:name="Logger"/>
+        <mulerequester:request config-ref="requester1" resource="file:///C:/tmp/test/sample-person-input.csv" timeout="10000" doc:name="Read Input File"/>
+        <byte-array-to-object-transformer doc:name="Byte Array to Object"/>
+        <data-mapper:transform config-ref="PersonDataMapper" doc:name="PersonDataMapper"/>
         <batch:execute name="example-upsertBatch" doc:name="example-upsertBatch"/>
         <http:response-builder status="202" contentType="application/json" doc:name="HTTP Response Builder">
        	</http:response-builder>

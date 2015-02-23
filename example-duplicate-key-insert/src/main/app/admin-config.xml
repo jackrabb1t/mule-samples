@@ -37,26 +37,17 @@ http://www.mulesoft.org/schema/mule/objectstore http://www.mulesoft.org/schema/m
 	
     <data-mapper:config name="SampleDataMapper" transformationGraphPath="sampledatamapper.grf" doc:name="SampleDataMapper"/>
     
-<!--      <db:mysql-config name="MySQL_Configuration" host="localhost" port="3306"  -->
-<!--     	user="root" password="root" database="local1" doc:name="MySQL Local Configuration"/> -->
-    	<!-- 
-    	    <db:mysql-config name="MySQL_Configuration" dataSource-ref="jdbcDataSource" doc:name="MySQL Configuration"/>   
-    	
-    	 -->
-        <spring:beans>
-             <spring:bean id= "jdbcDataSource" class ="org.apache.commons.dbcp.BasicDataSource" name= "Bean">
-	            <spring:property name= "driverClassName" value ="com.mysql.jdbc.Driver" />           
-	            <spring:property name= "username" value = "root"/>
-	            <spring:property name= "password" value = "root"/>	
-            	<spring:property name="url" value="jdbc:mysql://localhost:3306/local1?useAffectedRows=true"/>
-                <!-- Following properties added for having auto reconnect  mechanism-->
-	            <spring:property name= "testOnBorrow" value = "true"/>
-	            <spring:property name= "validationQuery" value = "select 1"/>
-       			<!-- Following properties added for getting affected rows value -->
-<!--            		<spring:property name="useAffectedRows" value="true"/>  -->
-           
-             </spring:bean>
-        </spring:beans>
+      <spring:beans>
+           <spring:bean id= "jdbcDataSource" class ="org.apache.commons.dbcp.BasicDataSource" name= "Bean">
+           <spring:property name= "driverClassName" value ="com.mysql.jdbc.Driver" />           
+           <spring:property name= "username" value = "root"/>
+           <spring:property name= "password" value = "root"/>	
+          	<spring:property name="url" value="jdbc:mysql://localhost:3306/local1?useAffectedRows=true"/>
+              <!-- Following properties added for having auto reconnect  mechanism-->
+           <spring:property name= "testOnBorrow" value = "true"/>
+           <spring:property name= "validationQuery" value = "select 1"/>
+           </spring:bean>
+      </spring:beans>
 
  	<db:mysql-config name="MySQL_Configuration" dataSource-ref="jdbcDataSource" doc:name="MySQL_Configuration"/>   
 </mule>

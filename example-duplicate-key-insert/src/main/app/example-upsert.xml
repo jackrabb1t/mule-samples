@@ -25,34 +25,95 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <batch:process-records>
             <batch:step name="Batch_Step_1">
                 <logger message="in B.S.1 #[payload]" level="INFO" doc:name="Print payload"/>
-                 <db:insert config-ref="MySQL_Configuration" target="#[flowVars['updateCount']]" doc:name="Database">
+                 <db:insert config-ref="MySQL_Configuration" 
+                 	target="#[recordVars['updateCount']]" 
+                 	doc:name="Database">
                     <db:parameterized-query><![CDATA[insert into person(id, name, val) 
                     		values (#[payload.get('Id')],#[payload.get('Name')],#[payload.get('Val')]) 
                     		on duplicate key 
                     			update id= #[payload.get('Id')], name=#[payload.get('Name')], val=#[payload.get('Val')];]]></db:parameterized-query>
 				</db:insert> 
-<!-- 				<logger message="Affected-Rows / UpdatedCount : #[flowVars['updateCount']]" level="INFO" doc:name="Print payload"/> -->
-                <choice doc:name="Choice">
-                	<when expression="#[flowVars['updateCount']>0]">
-                		<logger message="WHEN Affected-Rows / UpdatedCount : #[flowVars['updateCount']]" level="INFO" doc:name="Print payload"/>
+				<logger message="Affected-Rows / UpdatedCount : #[recordVars['updateCount']]" level="INFO" doc:name="Print payload"/>
+
+            </batch:step>
+            <batch:step name="Batch_Step_2" >
+             <choice doc:name="Choice">
+                	<when expression="#[recordVars['updateCount']>0]">
+                		<logger message="BS2 WHEN Affected-Rows / UpdatedCount : #[recordVars['updateCount']]" level="INFO" doc:name="Print payload"/>
+                <db:insert config-ref="MySQL_Configuration" 
+                 	target="#[recordVars['updateCountBasic']]" 
+                 	doc:name="Database">
+                    <db:parameterized-query><![CDATA[insert into person_basic(id, name) 
+                    		values (#[payload.get('Id')],#[payload.get('Name')]) 
+                    		on duplicate key 
+                    			update id= #[payload.get('Id')], name=#[payload.get('Name')];]]></db:parameterized-query>
+				</db:insert> 
             		</when>
 	                <otherwise>
-                		<logger message="DEFAULT Affected-Rows / UpdatedCount : #[flowVars['updateCount']]" level="INFO" doc:name="Print payload"/>
+                		<logger message="BS2 DEFAULT Affected-Rows / UpdatedCount : #[recordVars['updateCount']]" level="INFO" doc:name="Print payload"/>
 	            	</otherwise>
         		</choice>
+               </batch:step>
+
+    
+     <batch:step name="Batch_Step_3" >
+             <choice doc:name="Choice">
+                	<when expression="#[recordVars['updateCount']>0]">
+                		<logger message="BS3 WHEN Affected-Rows / UpdatedCount : #[recordVars['updateCount']]" level="INFO" doc:name="Print payload"/>
+                <db:insert config-ref="MySQL_Configuration" 
+                 	target="#[recordVars['updateCountAttr']]" 
+                 	doc:name="Database">
+                    <db:parameterized-query><![CDATA[insert into person_attr(id, val) 
+                    		values (#[payload.get('Id')],#[payload.get('Val')]) 
+                    		on duplicate key 
+                    			update id= #[payload.get('Id')], val=#[payload.get('Val')];]]></db:parameterized-query>
+				</db:insert> 
+            		</when>
+	                <otherwise>
+                		<logger message="BS3 DEFAULT Affected-Rows / UpdatedCount : #[recordVars['updateCount']]" level="INFO" doc:name="Print payload"/>
+	            	</otherwise>
+        		</choice>
+               </batch:step>
+            <batch:step name="Batch_Step_Failures" accept-policy="ONLY_FAILURES">
+                <logger level="INFO" doc:name="Logger"/>
             </batch:step>
         </batch:process-records>
         <batch:on-complete>
             <logger message="Completed" level="INFO" doc:name="Logger"/>
         </batch:on-complete>
     </batch:job>
+    
     <flow name="example-upsertFlow1">
         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="foo" doc:name="HTTP" connector-ref="SharedHttp"/>
         <mulerequester:request config-ref="requester1" resource="file:///C:/tmp/test/sample-person-input.csv" timeout="10000" doc:name="Read Input File"/>
         <byte-array-to-object-transformer doc:name="Byte Array to Object"/>
-        <data-mapper:transform config-ref="PersonDataMapper" doc:name="PersonDataMapper"/>
+        <data-mapper:transform config-ref="PersonDataMapper" doc:name="PersonDataMapper" stream="true"/>
         <batch:execute name="example-upsertBatch" doc:name="example-upsertBatch"/>
         <http:response-builder status="202" contentType="application/json" doc:name="HTTP Response Builder">
        	</http:response-builder>
     </flow>
+<!--         <flow name="example-upsertFlow2"> -->
+<!--         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="goo" doc:name="HTTP" connector-ref="SharedHttp"/> -->
+<!--         <logger level="INFO" doc:name="Logger1" message="Outside Before :  #[payload]"/> -->
+<!--         <scatter-gather doc:name="Scatter-Gather"> -->
+<!--              <logger level="INFO" doc:name="Logger1" message="1 :  #[payload]"/> -->
+<!--              <logger level="INFO" doc:name="Logger2" message="2 :  #[payload]"/> -->
+<!--          </scatter-gather> -->
+<!--          <logger level="INFO" doc:name="Logger1" message="Outside After :  #[payload]"/> -->
+<!--         <http:response-builder status="202" contentType="application/json" doc:name="HTTP Response Builder"> -->
+<!--        	</http:response-builder> -->
+<!--     </flow> -->
+<!--         <flow name="example-upsertFlow3"> -->
+<!--         <http:inbound-endpoint exchange-pattern="request-response" host="localhost" port="8081" path="goo2" doc:name="HTTP" connector-ref="SharedHttp"/> -->
+<!--         <set-payload value="{&quot;id&quot;=1,&quot;name&quot;=&quot;prem&quot;}" doc:name="Set Payload"/> -->
+<!--         <json:json-to-object-transformer doc:name="JSON to Object"/> -->
+<!--         <logger level="INFO" doc:name="Logger1" message="Outside Before :  #[payload]"/> -->
+<!--         <scatter-gather doc:name="Scatter-Gather"> -->
+<!--              <logger level="INFO" doc:name="Logger1" message="1 :  #[payload]"/> -->
+<!--              <logger level="INFO" doc:name="Logger2" message="2 :  #[payload]"/> -->
+<!--          </scatter-gather> -->
+<!--          <logger level="INFO" doc:name="Logger1" message="Outside After :  #[payload]"/> -->
+<!--         <http:response-builder status="202" contentType="application/json" doc:name="HTTP Response Builder"> -->
+<!--        	</http:response-builder> -->
+<!--     </flow> -->
 </mule>

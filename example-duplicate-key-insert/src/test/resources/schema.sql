@@ -35,9 +35,9 @@ select * from person;
 select * from person_basic;
 select * from person_attr;
 
-truncate table person;
-truncate table person_basic;
-truncate table person_attr;
+delete from person;
+delete from person_basic;
+delete from person_attr;
 
 drop table person;
 drop table person_basic;
